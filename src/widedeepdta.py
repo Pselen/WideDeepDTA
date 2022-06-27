@@ -240,28 +240,28 @@ class WideDeepDTA:
         ----------
         train_chemicals : list
             Train set of chemicals.
-        train_chemical_embs : list
+        train_chemical_embs : Array of float64
             Train set of chemicals with graph embeddings.
         train_proteins : list
             Train set of proteins.
-        train_protein_embs : list
+        train_protein_embs : Array of float64
             Train set of proteins with graph embeddings.
         train_labels : list
             Corresponding affinity values between train chemicals and proteins.
         val_chemicals : list, optional
             Validation set of chemicals. The default is None.
-        val_chemical_embs : list, optional
+        val_chemical_embs : Array of float64, optional
             Validation set of chemicals with graph embeddings. The default is None.
         val_proteins : list, optional
             Validation set of proteins. The default is None.
-        val_protein_embs : list, optional
+        val_protein_embs : Array of float64, optional
             Validation set of proteins with graph embeddings. The default is None.
         val_labels : list, optional
             Corresponding affinity values between validation chemicals and proteins.
 
         Returns
         -------
-        Model's history.
+        Model's history containing loss and mse values.
 
         """
         train_chemical_seq_vectors = self.vectorize_chemicals(train_chemicals)
@@ -298,11 +298,11 @@ class WideDeepDTA:
         ----------
         chemical_seqs : list
             Chemical sequences.
-        chemical_embs : list
+        chemical_embs : Array of float64
             Chemical sequences with graph embeddings.
         protein_seqs : list
             Protein sequences.
-        protein_embs : list
+        protein_embs : Array of float64
             Protein sequences with graph embeddings.
 
         Returns
