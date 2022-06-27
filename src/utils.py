@@ -19,11 +19,10 @@ def get_package_path():
         Parent path.
 
     """
-    return str(pathlib.Path(__file__).parent.resolve())
+    return str(pathlib.Path(__file__).parent.resolve().parents[0])
 
 
 package_path = get_package_path()
-
 
 class HFWordIdentifier:
     """Tokenizingstrings in sub-word token strings.
