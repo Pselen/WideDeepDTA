@@ -1,3 +1,5 @@
+"""Module for deep learning model."""
+
 import json
 import numpy as np
 from tensorflow.keras.layers import Conv1D, GlobalMaxPooling1D
@@ -9,6 +11,17 @@ from tensorflow.keras.optimizers import Adam
 from utils import tokenize_with_hf, encode_smiles
 
 class WideDeepDTA:
+    """
+    WideDeepDTA model.
+    
+    WideDeepDTA aims to predict binding affinity values of drug-target pairs using
+    information-rich representation vectors of corresponding drugs and targets
+    In order to generate rich representations, it combines text-based features
+    with network and language model-based representation learning approaches. 
+    WideDeepDTA comprises three components, CNN-based DeepDTA model,
+    graph representation learning, and affinity prediction.
+
+    """
     
     def __init__(self,
                  max_smi_len=100,
@@ -22,7 +35,7 @@ class WideDeepDTA:
                  smi_filter_len=4, 
                  prot_filter_len=6):
         """
-        WideDeepDTA model constructor.
+        Model constructor.
 
         Parameters
         ----------
@@ -220,7 +233,37 @@ class WideDeepDTA:
               val_proteins=None,
               val_protein_embs=None,
               val_labels=None):
+        """
+        Model training.
 
+        Parameters
+        ----------
+        train_chemicals : list
+            Train set of chemicals.
+        train_chemical_embs : list
+            Train set of chemicals with graph embeddings.
+        train_proteins : list
+            Train set of proteins.
+        train_protein_embs : list
+            Train set of proteins with graph embeddings.
+        train_labels : list
+            Corresponding affinity values between train chemicals and proteins.
+        val_chemicals : list, optional
+            Validation set of chemicals. The default is None.
+        val_chemical_embs : list, optional
+            Validation set of chemicals with graph embeddings. The default is None.
+        val_proteins : list, optional
+            Validation set of proteins. The default is None.
+        val_protein_embs : list, optional
+            Validation set of proteins with graph embeddings. The default is None.
+        val_labels : list, optional
+            Corresponding affinity values between validation chemicals and proteins.
+
+        Returns
+        -------
+        Model's history.
+
+        """
         train_chemical_seq_vectors = self.vectorize_chemicals(train_chemicals)
         train_protein_seq_vectors = self.vectorize_proteins(train_proteins)
         train_labels = np.array(train_labels)
@@ -243,10 +286,31 @@ class WideDeepDTA:
         self.history = self.model.history.history
         return self.model.history.history
 
-    def predict(self, chemical_seqs,
+    def predict(self,
+                chemical_seqs,
                 chemical_embs,
                 protein_seqs,
                 protein_embs):
+        """
+        Affinity prediction.
+
+        Parameters
+        ----------
+        chemical_seqs : list
+            Chemical sequences.
+        chemical_embs : list
+            Chemical sequences with graph embeddings.
+        protein_seqs : list
+            Protein sequences.
+        protein_embs : list
+            Protein sequences with graph embeddings.
+
+        Returns
+        -------
+        list
+            Affinity values.
+
+        """
         chemical_vectors = self.vectorize_chemicals(chemical_seqs)
         protein_vectors = self.vectorize_proteins(protein_seqs)
         return self.model.predict([chemical_vectors,
@@ -255,6 +319,19 @@ class WideDeepDTA:
                                    protein_embs]).tolist()
 
     def save(self, path):
+        """
+        Save model.
+
+        Parameters
+        ----------
+        path : str
+            Path to save model.
+
+        Returns
+        -------
+        None.
+
+        """
         self.model.save(f'{path}/model')
 
         with open(f'{path}/history.json', 'w') as f:
